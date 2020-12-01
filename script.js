@@ -269,14 +269,17 @@ addTodoListButton.addEventListener('click',()=>{
    }
 });
 
+// todoList1.input.value = "asdasds";
+// todoList1.addToDo();
 
+$(document).ready(function() {
+    $.ajax({
+        url: 'show_data.php',
+        type: 'POST'
+    }).done(function(result) {
+        results = $.parseJSON(result);
+        results.forEach(element => new todoList(root, element));
+    });
+});
 
-let todoList1 = new todoList(root);
-let todoList2 = new todoList(root);
-let todoList3 = new todoList(root);
-
-
-
-todoList1.input.value = "asdasds";
-todoList1.addToDo();
 
