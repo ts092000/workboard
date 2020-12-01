@@ -12,8 +12,5 @@
         return $conn;
     }
 
-    $sql = "select * from to_do_list";
     $conn = open_database();
-    $rs = $conn->query($sql);
-    $conn->close();
 ?>

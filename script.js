@@ -265,6 +265,14 @@ let addTodoListButton = document.getElementById("addTodoListButton");
 addTodoListButton.addEventListener('click',()=>{
    if ( addTodoListInput.value.trim() != ""){
     new todoList(root, addTodoListInput.value);
+       $.ajax({
+           type: "POST",
+           url: "add_to_do_list.php",
+           data: { name:addTodoListInput.value },
+           success: function(result){
+               alert(result);
+           }
+       });
     addTodoListInput.value = "";
    }
 });
