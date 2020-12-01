@@ -2,10 +2,11 @@ let root = document.getElementById("root");
 
 
 class todoList{
-    constructor(place, title = "to-do list"){
+    constructor(place, title = "to-do list", id){
 
         this.place = place;
         this.title = title;
+        this.id = id;
         this.cardArray = [];
 
         this.render();
@@ -13,6 +14,14 @@ class todoList{
 
     addToDo(){
         let text = this.input.value;
+        $.ajax({
+                type: "POST",
+                url: "add_task.php",
+                data: { id_to_do_list:this.id, text: this.input.value},
+                success: function(result){
+                    alert(result);
+                }
+            });
         this.cardArray.push(new Card(text, this.div, this));
     }
 
@@ -48,6 +57,7 @@ class todoList{
         this.todoListElement.append(this.button);
         this.todoListElement.append(this.div);
         this.todoListElement.classList.add("todoList");
+        this.todoListElement.id = this.id;
     }
 }
 
@@ -285,8 +295,11 @@ $(document).ready(function() {
         url: 'show_data.php',
         type: 'POST'
     }).done(function(result) {
-        results = $.parseJSON(result);
-        results.forEach(element => new todoList(root, element));
+        results_id = $.parseJSON(result)['array_id'];
+        results_name = $.parseJSON(result)['array_name'];
+        results_id.forEach(function(item, index){
+            new todoList(root, results_name[index], item);
+        });
     });
 });
 
