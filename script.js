@@ -12,6 +12,11 @@ class todoList{
         this.render();
     }
 
+    showToDo(){
+        let text = this.input.value;
+        this.cardArray.push(new Card(text, this.div, this));
+    }
+
     addToDo(){
         let text = this.input.value;
         $.ajax({
@@ -22,6 +27,7 @@ class todoList{
                     alert(result);
                 }
             });
+
         this.cardArray.push(new Card(text, this.div, this));
     }
 
@@ -95,7 +101,6 @@ class Card{
 
         this.card.append(this.p);
         this.card.append(this.deleteButton);
-        
         this.place.append(this.card);
     }
 
@@ -287,18 +292,24 @@ addTodoListButton.addEventListener('click',()=>{
    }
 });
 
-// todoList1.input.value = "asdasds";
-// todoList1.addToDo();
-
 $(document).ready(function() {
     $.ajax({
         url: 'show_data.php',
         type: 'POST'
     }).done(function(result) {
-        results_id = $.parseJSON(result)['array_id'];
-        results_name = $.parseJSON(result)['array_name'];
-        results_id.forEach(function(item, index){
-            new todoList(root, results_name[index], item);
+        results_id_task = $.parseJSON(result)['id_task'];
+        results_title = $.parseJSON(result)['title'];
+        name_todo = $.parseJSON(result)['name'];
+        id = $.parseJSON(result)['id'];
+        name_todo.forEach(function(name_to_do, index_to_do){
+            let todolist = new todoList(root, name_to_do, id[index_to_do]);
+            results_title.forEach(function(title, index_task){
+                if (id[index_to_do] == results_id_task[index_task]){
+                    todolist.input.value = title;
+                    todolist.showToDo();
+                    todolist.input.value = "";
+                }
+            });
         });
     });
 });
