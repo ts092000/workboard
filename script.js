@@ -108,6 +108,15 @@ class Card{
         this.card.remove();
         let i = this.todoList.cardArray.indexOf(this);
         this.todoList.cardArray.splice(i,1);
+
+        $.ajax({
+            type: "POST",
+            url: "delete_task.php",
+            data: { index: i, id: this.todoList.id},
+            success: function(result){
+                alert(result);
+            }
+        });
     }
 
     showMenu(){
