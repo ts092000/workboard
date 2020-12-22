@@ -4,7 +4,7 @@ include('connect.php');
 if(isset($_POST['id_to_do_list']) && isset($_POST['text'])){
     $id = $_POST['id_to_do_list'];
     $text = $_POST['text'];
-    $description = "";
+    $description = "Click to write a description...";
     $comment = "";
     $insert_task = "INSERT INTO task (id_task, title, description, comment) VALUES ('$id', '$text', '$description', '$comment')";
 

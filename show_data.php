@@ -8,11 +8,13 @@ $rs_to_to_list = $conn->query($DB_to_do_list);
 $title = array();
 $id_task = array();
 $name = array();
+$num_task = array();
 $id_todolist = array();
 if ($rs_task->num_rows > 0 && $rs_to_to_list->num_rows > 0) {
     // output data of each row
     while($row = $rs_task->fetch_assoc()) {
         array_push($id_task, $row["id_task"]);
+        array_push($num_task, $row["id"]);
         array_push($title, $row["title"]);
     }
 
@@ -21,7 +23,7 @@ if ($rs_task->num_rows > 0 && $rs_to_to_list->num_rows > 0) {
         array_push($id_todolist, $row["id"]);
     }
 
-    echo json_encode(array('id_task'=>$id_task, 'title'=>$title,'name'=> $name, 'id'=> $id_todolist));
+    echo json_encode(array('id_task'=>$id_task, 'title'=>$title,'name'=> $name, 'id'=> $id_todolist, 'num_task'=>$num_task));
 } else {
     echo "0 results";
 }

@@ -12,9 +12,9 @@ class todoList{
         this.render();
     }
 
-    showToDo(){
+    showToDo(num_task){
         let text = this.input.value;
-        this.cardArray.push(new Card(text, this.div, this));
+        this.cardArray.push(new Card(text, this.div, this, num_task));
     }
 
     addToDo(){
@@ -69,12 +69,13 @@ class todoList{
 
 
 class Card{
-    constructor(text, place, todoList){
+    constructor(text, place, todoList, num_task){
 
         this.place = place;
         this.todoList = todoList;
         this.state = {
             text: text,
+            id: num_task,
             description: "Click to write a description...",
             comments: []
         }
@@ -84,6 +85,7 @@ class Card{
     render(){
         this.card = document.createElement('div');
         this.card.classList.add("card");
+        this.card.id = this.state.id;
         this.card.addEventListener('click', (e)=>{
             if(e.target != this.deleteButton){
                 this.showMenu.call(this);
@@ -168,8 +170,18 @@ class Card{
         this.menu.append(this.menuComments);
         this.menuContainer.append(this.menu);
         root.append(this.menuContainer);
-
-        this.editableDescription = new EditableText(this.state.description, this.menuDescription, this, "description", "textarea");
+        var description = "";
+        $.ajax({
+            type: "POST",
+            url: "show_des_task.php",
+            async: false,
+            data: { id_task:this.card.id },
+            success: function(result){
+                description = result;
+            }
+        });
+        
+        this.editableDescription = new EditableText(description, this.menuDescription, this, "description", "textarea");
         this.editableTitle = new EditableText(this.state.text, this.menuTitle, this, "text", "input");
         
         this.renderComments();
@@ -227,6 +239,15 @@ class EditableText{
 
         this.saveButton.addEventListener('click', ()=>{
             this.text = this.input.value;
+            console.log(this.text);
+            $.ajax({
+                type: "POST",
+                url: "add_cmt.php",
+                data: { id_card:this.card.card.id, text: this.text},
+                success: function(result){
+                    alert(result);
+                }
+            });
             this.card.state[this.property] = this.input.value;
             if(this.property == "text"){
                 this.card.p.innerText = this.input.value;
@@ -306,6 +327,7 @@ $(document).ready(function() {
         url: 'show_data.php',
         type: 'POST'
     }).done(function(result) {
+        num_task = $.parseJSON(result)['num_task'];
         results_id_task = $.parseJSON(result)['id_task'];
         results_title = $.parseJSON(result)['title'];
         name_todo = $.parseJSON(result)['name'];
@@ -315,7 +337,7 @@ $(document).ready(function() {
             results_title.forEach(function(title, index_task){
                 if (id[index_to_do] == results_id_task[index_task]){
                     todolist.input.value = title;
-                    todolist.showToDo();
+                    todolist.showToDo(num_task[index_task]);
                     todolist.input.value = "";
                 }
             });
